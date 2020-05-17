@@ -42,7 +42,7 @@
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://unpkg.com/topojson-client@3"></script>
     <script>
-        const mapjson   = "https://gist.githubusercontent.com/sailao/0f794379c1268cf08f0fa35aedc3a880/raw/3b588ae72be19e1a567c8078ba927ac05c51e189/mm_map.topojson";
+        const mapjson   = "https://gist.githubusercontent.com/sailao/f439b297f8aab0e44b9a67713efe9ea1/raw/7f9ddd5cf6a97506deeeab1e80574eb1f4ba19a5/mm_map.geojson";
         const myanmar   = [95.956, 21.9162];
         const map       = d3.select("#map");
         const width     = map.node().getBoundingClientRect().width;
@@ -60,11 +60,11 @@
         const g = svg.append("g")
   
         const drawMap = (map, g) => g.selectAll('path')
-            .data(map.objects.data.geometries.map(g=>topojson.feature(map, g)))
+            .data(map.features)
             .enter().append('path')
             .attr('d', path)
             .attr('opacity', 0.6)
-            .on('mouseover', d=>d3.select('#tooltip').html(d.properties.TS))
+            .on('mouseover', d=>d3.select('#tooltip').html(d.properties.T_NAME_M3))
             .on('mouseout', d=>d3.select('#tooltip').html('- -'))
   
         fetch(mapjson)
