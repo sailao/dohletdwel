@@ -43,6 +43,12 @@
     <script src="https://unpkg.com/topojson-client@3"></script>
     <script>
         const mapjson   = "https://gist.githubusercontent.com/sailao/f439b297f8aab0e44b9a67713efe9ea1/raw/7f9ddd5cf6a97506deeeab1e80574eb1f4ba19a5/mm_map.geojson";
+        
+        fetch(mapjson)
+            .then(result=>result.json())
+            .then(data=>drawMap(data, g))
+            .catch(err=>console.log(err));
+
         const myanmar   = [95.956, 21.9162];
         const map       = d3.select("#map");
         const width     = map.node().getBoundingClientRect().width;
@@ -65,13 +71,7 @@
             .attr('d', path)
             .attr('opacity', 0.6)
             .on('mouseover', d=>d3.select('#tooltip').html(d.properties.T_NAME_M3))
-            .on('mouseout', d=>d3.select('#tooltip').html('- -'))
-  
-        fetch(mapjson)
-            .then(result=>result.json())
-            .then(data=>drawMap(data, g))
-            .catch(err=>console.log(err))
-  
+            .on('mouseout', d=>d3.select('#tooltip').html('- -'));
       </script>
 </body>
 </html>
