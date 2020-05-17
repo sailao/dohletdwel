@@ -14,5 +14,51 @@
 <body>
     <h1>တို့လက်တွဲမှ ကြိုဆိုပါတယ်</h1>
     <p>ညီလေး ညီမလေးတို့ ဆွေးနွေးပြီး အပိုင်းတခုခြင်းကို ဒီမှာတင်ပေးမည်။</p>
+    <div id="map"></div>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://unpkg.com/topojson-client@3"></script>
+    <script>
+        const myanmar = [95.956, 21.9162];
+        const map = d3.select("#map");
+        const mapjson = "https://gist.githubusercontent.com/SteveHedden/2b5f371dbed74cd68f8e2b175d6782c6/raw/16f8edcaf1e2f43dd2a3a83769cdc0abc8fb0745/data.geoJSON";
+  
+        // use DOM function to get width
+        var width = map.node().getBoundingClientRect().width;
+        var height = width/2;
+  
+        var scale = 1000;
+        var projection = d3.geoMercator()
+                            .center(myanmar)
+                            .scale(scale);
+        // apply project to path object (features)
+        var path = d3.geoPath().projection(projection);
+  
+        var zoom = d3.zoom()
+          .scaleExtent([1,50])
+          .translateExtent([[0,0], [width, height]])
+          .extent([[0, 0], [width, height]])
+          .on("zoom", zoomed);
+  
+        var svg = map.append('svg')
+          .attr('width', width)
+          .attr('height', height)
+          .call(zoom);
+  
+        var g = svg.append("g")
+                    .attr('class', 'features');
+  
+        d3.json(mapjson, function(error, features) {
+          if (error) throw error;
+          g.selectAll('path')
+              .data(features.features)
+            .enter().append('path')
+              .attr('d', path);
+  
+        });
+        // functions //
+        function zoomed() {
+          g.attr("transform", d3.event.transform);
+        }
+      </script>
 </body>
 </html>
