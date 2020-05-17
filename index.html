@@ -60,6 +60,7 @@
             .data(map.objects.data.geometries.map(g=>topojson.feature(map, g)))
             .enter().append('path')
             .attr('d', path)
+            .attr('opacity', 0.6)
   
         fetch(mapjson)
             .then(result=>result.json())
