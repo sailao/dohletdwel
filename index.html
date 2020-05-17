@@ -70,7 +70,7 @@
             .enter().append('path')
             .attr('d', path)
             .attr('opacity', 0.6)
-            .on('mouseover', d=>d3.select('#tooltip').html(d.properties.T_NAME_M3))
+            .on('mouseover', ({properties: data})=>d3.select('#tooltip').html(data.T_NAME_M3 + ' ' + data.ST_2))
             .on('mouseout', d=>d3.select('#tooltip').html('- -'));
       </script>
 </body>
