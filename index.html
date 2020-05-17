@@ -34,7 +34,10 @@
             <h1>တို့လက်တွဲမှ ကြိုဆိုပါတယ်</h1>
             <p>ညီလေး ညီမလေးတို့ ဆွေးနွေးပြီး အပိုင်းတခုခြင်းကို ဒီမှာတင်ပေးမည်။</p>
         </div>
-        <div id="map" class="flex-item"></div>
+        <div class="flex-item">
+            <h3 id="tooltip">- -</h3>
+            <div id="map"></div>
+        </div>
     </div>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://unpkg.com/topojson-client@3"></script>
@@ -61,6 +64,8 @@
             .enter().append('path')
             .attr('d', path)
             .attr('opacity', 0.6)
+            .on('mouseover', d=>d3.select('#tooltip').html(d.properties.TS))
+            .on('mouseout', d=>d3.select('#tooltip').html('- -'))
   
         fetch(mapjson)
             .then(result=>result.json())
