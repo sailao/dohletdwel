@@ -7,58 +7,68 @@
     <style>
         body{
             text-align: center;
-            margin-top: 200px;
+           
         }
+        .flexWrap {
+            text-align: center;
+            display: flex;
+            justify-content: center;
+
+        }
+        .content {
+            margin-top: 100px;
+            padding: 100px;
+        }
+
+        .flex-item {
+            flex-grow: 0;
+            flex-shrink: 0;
+            flex-basis: 50%;
+        }
+    
     </style>
 </head>
 <body>
-    <h1>တို့လက်တွဲမှ ကြိုဆိုပါတယ်</h1>
-    <p>ညီလေး ညီမလေးတို့ ဆွေးနွေးပြီး အပိုင်းတခုခြင်းကို ဒီမှာတင်ပေးမည်။</p>
-    <div id="map"></div>
+    <div class="flexWrap">
+        <div class="content">
+            <h1>တို့လက်တွဲမှ ကြိုဆိုပါတယ်</h1>
+            <p>ညီလေး ညီမလေးတို့ ဆွေးနွေးပြီး အပိုင်းတခုခြင်းကို ဒီမှာတင်ပေးမည်။</p>
+        </div>
+        <div id="map" class="flex-item"></div>
+    </div>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://unpkg.com/topojson-client@3"></script>
     <script>
         const myanmar = [95.956, 21.9162];
         const map = d3.select("#map");
-        const mapjson = "https://gist.githubusercontent.com/SteveHedden/2b5f371dbed74cd68f8e2b175d6782c6/raw/16f8edcaf1e2f43dd2a3a83769cdc0abc8fb0745/data.geoJSON";
+        const mapjson = "https://gist.githubusercontent.com/sailao/0f794379c1268cf08f0fa35aedc3a880/raw/3b588ae72be19e1a567c8078ba927ac05c51e189/mm_map.topojson";
   
         // use DOM function to get width
         var width = map.node().getBoundingClientRect().width;
-        var height = width/2;
+        var height = width/1.2;
   
-        var scale = 1000;
-        var projection = d3.geoMercator()
-                            .center(myanmar)
-                            .scale(scale);
+        var scale = 1600;
+        var projection = d3.geoMercator() .center(myanmar) .scale(scale);
         // apply project to path object (features)
         var path = d3.geoPath().projection(projection);
+
+        const zoomed =_=> g.attr("transform", d3.event.transform);
   
-        var zoom = d3.zoom()
-          .scaleExtent([1,50])
-          .translateExtent([[0,0], [width, height]])
-          .extent([[0, 0], [width, height]])
-          .on("zoom", zoomed);
+        var zoom = d3.zoom() .scaleExtent([1,50]) .translateExtent([[0,0], [width, height]]) 
+            .extent([[0, 0], [width, height]]) .on("zoom", zoomed);
   
-        var svg = map.append('svg')
-          .attr('width', width)
-          .attr('height', height)
-          .call(zoom);
+        var svg = map.append('svg') .attr('width', width) .attr('height', height) .call(zoom);
   
-        var g = svg.append("g")
-                    .attr('class', 'features');
-  
-        d3.json(mapjson, function(error, features) {
-          if (error) throw error;
-          g.selectAll('path')
-              .data(features.features)
+        const drawMap = map => svg.append("g").selectAll('path')
+            .data(map.objects.data.geometries.map(g=>topojson.feature(map, g)))
             .enter().append('path')
-              .attr('d', path);
+            .attr('d', path);
   
-        });
-        // functions //
-        function zoomed() {
-          g.attr("transform", d3.event.transform);
-        }
+        fetch(mapjson)
+            .then(data=>data.json())
+            .then(map=>drawMap(map))
+            .catch(err=>console.log(err))
+  
       </script>
 </body>
 </html>
